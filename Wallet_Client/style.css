@@ -1,0 +1,50 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('./assets/digital\ wallet.jpeg');
+    background-repeat: no-repeat;
+    
+}
+.h1-header {
+    text-align: center;
+    color: #ddd2d2;
+    font-size: 2em;
+
+}
+.container {
+    
+    width: 300px;
+    padding: 20px;
+    background-color: transparent;
+    box-shadow: 0px 0px 10px rgba(43, 42, 42, 0.1);
+    margin: 50px auto;
+    text-align: center;
+}
+h2, p {
+    color: #e0d9d9;
+    font-size: 1em;
+    line-height: 1.5;
+    font-weight: bold;
+}
+input {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid ;
+    border-radius: 10px;
+    background-color: rgb(233, 229, 229);
+}
+button {
+    background-color: #fa0324;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+button:hover {
+    background-color: #910000;
+    transition: background-color 0.3s ease-in-out;
+    letter-spacing:1px ;
+}
