@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Form submit event handler
+    
     document.getElementById('registrationForm').addEventListener('submit', function (e) {
         e.preventDefault();
 
@@ -61,7 +61,7 @@ function togglePassword(fieldId, iconElement) {
     iconElement.textContent = field.type === "password" ? "👁️" : "🙈";
 }
 
-// Function to handle social sign-ups
+
 function socialSignup(platform) {
     alert(`Signing up with ${platform}...`);
 }

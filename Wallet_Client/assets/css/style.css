@@ -38,6 +38,7 @@ body {
 
 
 .container {
+   
     width: 100%;
     margin-top: 30px;
     max-width: 450px;
@@ -68,7 +69,7 @@ body {
     opacity: 1;
 }
 
-/* Input Fields */
+
 .input-group {
     display: flex;
     align-items: center;
@@ -93,7 +94,7 @@ body {
     box-shadow: 0px 5px 10px rgba(255, 59, 59, 0.3);
 }
 
-/* Password Toggle Icon */
+
 .toggle-password {
     position: absolute;
     right: 10px;
