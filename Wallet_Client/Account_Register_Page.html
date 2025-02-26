@@ -1,27 +1,54 @@
- <!DOCTYPE html>
- <html lang="en">
- <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Registration page</title>
-    <link rel="stylesheet"  href="style.css">
- </head>
- <body>
+    <title>Digital Wallet - Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-    <h1 class="h1-header">Welcome to Digital Wallet !</h1>
     <div class="container">
         <h2>Register for Digital Wallet</h2>
         <form id="registrationForm" method="post">
-            <input type="text" id="name" placeholder="Full Name" required>
-            <input type="email" id="email" placeholder="Email Address" required>
-            <input type="tel" id="phone" placeholder="Phone Number" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-            <button type="submit">Register</button>
+            <div class="input-group">
+                <input type="text" id="name" placeholder="Full Name" required>
+            </div>
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Email Address" required>
+            </div>
+            <div class="input-group">
+                <input type="tel" id="phone" placeholder="Phone Number" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Password" required>
+                <span class="toggle-password" onclick="togglePassword('password', this)">👁️</span>
+            </div>
+            <div class="input-group">
+                <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                <span class="toggle-password" onclick="togglePassword('confirmPassword', this)">👁️</span>
+            </div>
+            <button type="submit">Sign Up</button>
         </form>
-        <p>Already have an account? <a href="login.html" style="color: 
-        rgb(221, 0, 0);">Login</a></p>
+
+        <!-- Social Media Signup Buttons -->
+        <p class="social-text">Or Sign Up with</p>
+        <div class="social-buttons">
+            <button class="social-btn facebook" onclick="socialSignup('Facebook')">
+                <img src="assets/facebook-icon.png" alt="Facebook"> Facebook
+            </button>
+            <button class="social-btn google" onclick="socialSignup('Google')">
+                <img src="assets/google-icon.png" alt="Google"> Google
+            </button>
+            <button class="social-btn outlook" onclick="socialSignup('Outlook')">
+                <img src="assets/outlook-icon.png" alt="Outlook"> Outlook
+            </button>
+        </div>
+
+        <p>Already have an account? <a href="login.html" style="color: red;">Login</a></p>
     </div>
+
     <script src="script.js"></script>
- </body>
- </html>
+
+</body>
+</html>
