@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Wallet - Register</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+
+  <main class="auth-container">
+    <div class="auth-form">
+      <h2>Create Your Account</h2>
+      <form action="../backend/register.php" method="post" id="registerForm" >
+        <div class="form-group">
+          <label for="fullname">Full Name</label>
+          <input type="text" id="fullname" name="fullname" required placeholder="Your full name" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" required placeholder="Your email" />
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="text" id="phone" name="phone" required placeholder="Your phone number" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required placeholder="Choose a password" />
+        </div>
+        <div class="form-group">
+          <label for="confirm_password">Confirm Password</label>
+          <input type="password" id="confirm_password" name="confirm_password" required placeholder="Confirm your password" />
+        </div>
+        <div class="form-group">
+          <label for="id_document">Upload ID Document</label>
+          <input type="file" id="id_document" name="id_document" required />
+        </div>
+        <button type="submit" class="btn">Register</button>
+      </form>
+
+      <!-- Social Registration Buttons -->
+      <div class="social-register">
+        <p style="color: white;">Or register using:</p>
+        <div class="social-buttons">
+          <a href="#" class="social-btn facebook" title="Register with Facebook">
+            <img src="assets/images/facebook-icon.png">
+          </a>
+          <a href="#" class="social-btn gmail" title="Register with Gmail">
+            <img src="assets/images/gmail-logo.png" alt="Gmail" />
+          </a>
+          <a href="#" class="social-btn outlook" title="Register with Outlook">
+            <img src=" assets/images/outlook-logo.png" alt="Outlook" />
+          </a>
+        </div>
+      </div>
+
+      <p class="auth-footer">Already have an account? <a href="login.html">Login here</a></p>
+    </div>
+  </main>
+  <script src="assets/js/script.js"></script> 
+</body>
+</html>
