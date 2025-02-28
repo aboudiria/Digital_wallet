@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigitalWallet Admin - Reporting</title>
+  <link rel="stylesheet" href="../Client/assets/css/style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">DigitalWallet Admin</div>
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="analytics.html">Analytics</a></li>
+        <li><a href="reporting.html" class="active">Reporting</a></li>
+        <li><a href="logout.php">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Reporting Section -->
+  <main class="reporting-container">
+    <h2>Generate Reports</h2>
+    <form id="reportForm">
+      <div class="form-group">
+        <label for="reportType">Report Type</label>
+        <select id="reportType" name="reportType" required>
+          <option value="">-- Select Report --</option>
+          <option value="financial">Financial Report</option>
+          <option value="operational">Operational Report</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="reportDate">Select Date</label>
+        <input type="date" id="reportDate" name="reportDate" required>
+      </div>
+      <button type="submit" class="btn">Generate Report</button>
+    </form>
+  </main>
+</body>
+</html>

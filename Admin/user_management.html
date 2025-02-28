@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigitalWallet Admin - User Management</title>
+  <link rel="stylesheet" href="../Client/assets/css/style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">DigitalWallet Admin</div>
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="account_limits.html">Account Limits</a></li>
+        <li><a href="user_management.html" class="active">User Management</a></li>
+        <li><a href="logout.php">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- User Management Section -->
+  <main class="user-management-container">
+    <h2>User Management</h2>
+    <table class="user-table">
+      <thead>
+        <tr>
+          <th>User ID</th>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>Tier</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>John Doe</td>
+          <td>john@example.com</td>
+          <td>Verified</td>
+          <td>
+            <a href="edit_user.php?id=1" class="btn small-btn">Edit</a>
+            <a href="delete_user.php?id=1" class="btn small-btn danger">Delete</a>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

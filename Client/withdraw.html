@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigitalWallet - Withdraw Funds</title>
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">DigitalWallet</div>
+      <ul class="nav-links">
+        <li><a href="wallet.html">Dashboard</a></li>
+        <li><a href="deposit.html">Deposit</a></li>
+        <li><a href="withdraw.html" class="active">Withdraw</a></li>
+        <li><a href="transfer.html">Transfer</a></li>
+        <li><a href="profile.html">Profile</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Withdrawal Form Section -->
+  <main class="form-container">
+    <div class="form-card">
+      <h2>Withdraw Funds</h2>
+      <form id="withdrawForm">
+        <div class="form-group">
+          <label for="withdrawAmount">Amount</label>
+          <input type="number" id="withdrawAmount" name="withdrawAmount" placeholder="Enter amount" required>
+        </div>
+        <div class="form-group">
+          <label for="withdrawMethod">Select Withdrawal Method</label>
+          <select id="withdrawMethod" name="withdrawMethod" required>
+            <option value="">-- Choose Method --</option>
+            <option value="bank">Bank Account</option>
+            <option value="card">Card</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">Submit Withdrawal</button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

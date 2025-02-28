@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigitalWallet Admin - Dashboard</title>
+  <link rel="stylesheet" href="../Client/assets/css/style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">DigitalWallet Admin</div>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="account_limits.html">Account Limits</a></li>
+        <li><a href="user_management.html">Users</a></li>
+        <li><a href="logout.php">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Admin Dashboard Section -->
+  <main class="admin-dashboard-container">
+    <section class="admin-stats">
+      <h2>Overview</h2>
+      <div class="stats-cards">
+        <div class="stat-card">
+          <h3>Total Users</h3>
+          <p>1,200</p>
+        </div>
+        <div class="stat-card">
+          <h3>Total Transactions</h3>
+          <p>15,300</p>
+        </div>
+        <div class="stat-card">
+          <h3>Total Volume</h3>
+          <p>$1,250,000</p>
+        </div>
+      </div>
+    </section>
+    <section class="admin-actions">
+      <h2>Quick Actions</h2>
+      <div class="actions-buttons">
+        <a href="account_limits.html" class="btn action-btn">Set Limits</a>
+        <a href="user_management.html" class="btn action-btn">Manage Users</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

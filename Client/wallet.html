@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigitalWallet - Dashboard</title>
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">DigitalWallet</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="wallet.html" class="active">Dashboard</a></li>
+        <li><a href="transaction_history.html">Transactions</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="logout.php">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="dashboard-container">
+    <section class="wallet-overview">
+      <h2>Wallet Overview</h2>
+      <div class="wallet-stats">
+        <div class="stat-card">
+          <h3>Balance</h3>
+          <p>$1,200.00</p>
+        </div>
+        <div class="stat-card">
+          <h3>Total Deposits</h3>
+          <p>$3,500.00</p>
+        </div>
+        <div class="stat-card">
+          <h3>Total Withdrawals</h3>
+          <p>$2,300.00</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="wallet-actions">
+      <h2>Quick Actions</h2>
+      <div class="actions-buttons">
+        <a href="deposit.html" class="btn action-btn">Deposit</a>
+        <a href="withdraw.html" class="btn action-btn">Withdraw</a>
+        <a href="transfer.html" class="btn action-btn">Transfer</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigitalWallet - Transfer Funds</title>
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">DigitalWallet</div>
+      <ul class="nav-links">
+        <li><a href="wallet.html">Dashboard</a></li>
+        <li><a href="deposit.html">Deposit</a></li>
+        <li><a href="withdraw.html">Withdraw</a></li>
+        <li><a href="transfer.html" class="active">Transfer</a></li>
+        <li><a href="profile.html">Profile</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Transfer Form Section -->
+  <main class="form-container">
+    <div class="form-card">
+      <h2>Transfer Funds</h2>
+      <form id="transferForm">
+        <div class="form-group">
+          <label for="recipient">Recipient Email or Phone</label>
+          <input type="text" id="recipient" name="recipient" placeholder="Enter recipient details" required>
+        </div>
+        <div class="form-group">
+          <label for="transferAmount">Amount</label>
+          <input type="number" id="transferAmount" name="transferAmount" placeholder="Enter amount" required>
+        </div>
+        <button type="submit" class="btn">Submit Transfer</button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigitalWallet - Scheduled Payments</title>
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+ 
+  <header>
+    <nav class="navbar">
+      <div class="logo">DigitalWallet</div>
+      <ul class="nav-links">
+        <li><a href="wallet.html">Dashboard</a></li>
+        <li><a href="scheduled_payments.html" class="active">Scheduled Payments</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="logout.php">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+ 
+  <main class="form-container">
+    <div class="form-card">
+      <h2>Schedule a Payment</h2>
+      <form id="scheduledPaymentForm">
+        <div class="form-group">
+          <label for="payee">Payee Email or Phone</label>
+          <input type="text" id="payee" name="payee" placeholder="Enter recipient" required>
+        </div>
+        <div class="form-group">
+          <label for="paymentAmount">Amount</label>
+          <input type="number" id="paymentAmount" name="paymentAmount" placeholder="Enter amount" required>
+        </div>
+        <div class="form-group">
+          <label for="paymentDate">Payment Date</label>
+          <input type="date" id="paymentDate" name="paymentDate" required>
+        </div>
+        <div class="form-group">
+          <label for="frequency">Frequency</label>
+          <select id="frequency" name="frequency" required>
+            <option value="">-- Choose Frequency --</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">Schedule Payment</button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>
