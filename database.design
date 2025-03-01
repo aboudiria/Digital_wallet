@@ -1,112 +1,131 @@
-//Table of users
+CREATE DATABASE digital_wallet;
+USE digital_wallet;
 
+-- Users Table (Admins and Clients)
 CREATE TABLE users (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  fullname VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  phone VARCHAR(20) NOT NULL,
-  address VARCHAR(255),
-  password VARCHAR(255) NOT NULL,
-  id_document VARCHAR(255),
-  is_verified TINYINT(1) DEFAULT 0,
-  tier ENUM('basic','verified','premium') DEFAULT 'basic',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    phone VARCHAR(20) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('client', 'admin') DEFAULT 'client',
+    verification_status ENUM('pending', 'verified', 'rejected') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
+-- Identity Verification Table
+CREATE TABLE identity_verifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    document_type ENUM('passport', 'driver_license', 'national_id'),
+    document_path VARCHAR(255) NOT NULL,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 
-//Table of transactions
-CREATE TABLE transactions (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL,
-  transaction_type ENUM('deposit','withdrawal','transfer','scheduled') NOT NULL,
-  amount DECIMAL(10,2) NOT NULL,
-  balance_after DECIMAL(10,2),
-  status ENUM('pending','completed','failed') DEFAULT 'pending',
-  reference VARCHAR(255),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-//Transfers Table
-
-CREATE TABLE transfers (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  sender_id INT NOT NULL,
-  receiver_id INT NOT NULL,
-  amount DECIMAL(10,2) NOT NULL,
-  status ENUM('pending','completed','failed') DEFAULT 'pending',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (sender_id) REFERENCES users(id),
-  FOREIGN KEY (receiver_id) REFERENCES users(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-// Scheduled Payments Table
-CREATE TABLE scheduled_payments (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL,
-  payee VARCHAR(255) NOT NULL,  -- Could be an external recipient email/phone or a foreign key if internal
-  amount DECIMAL(10,2) NOT NULL,
-  frequency ENUM('daily','weekly','monthly') NOT NULL,
-  next_payment_date DATE NOT NULL,
-  status ENUM('active','cancelled','completed') DEFAULT 'active',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-//  Account Limits Table
+-- Account Limits Table
 CREATE TABLE account_limits (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  tier ENUM('basic','verified','premium') NOT NULL,
-  daily_limit DECIMAL(10,2) NOT NULL,
-  weekly_limit DECIMAL(10,2) NOT NULL,
-  monthly_limit DECIMAL(10,2) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    daily_limit DECIMAL(10,2) DEFAULT 1000.00,
+    weekly_limit DECIMAL(10,2) DEFAULT 5000.00,
+    monthly_limit DECIMAL(10,2) DEFAULT 20000.00,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 
-//Notifications Table
+-- Wallets Table (Each user has a wallet)
+CREATE TABLE wallets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    balance DECIMAL(12,2) DEFAULT 0.00,
+    currency VARCHAR(10) DEFAULT 'USD',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Transactions Table (For deposits, withdrawals, transfers)
+CREATE TABLE transactions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    type ENUM('deposit', 'withdrawal', 'transfer'),
+    amount DECIMAL(12,2) NOT NULL,
+    status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Internal Transfers Table (P2P Transfers)
+CREATE TABLE internal_transfers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    amount DECIMAL(12,2) NOT NULL,
+    status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Scheduled / Recurring Payments
+CREATE TABLE scheduled_payments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    recipient_id INT NOT NULL,
+    amount DECIMAL(12,2) NOT NULL,
+    frequency ENUM('daily', 'weekly', 'monthly'),
+    status ENUM('active', 'paused', 'canceled') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Notifications Table
 CREATE TABLE notifications (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL,
-  message VARCHAR(500) NOT NULL,
-  is_read TINYINT(1) DEFAULT 0,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    message TEXT NOT NULL,
+    status ENUM('unread', 'read') DEFAULT 'unread',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 
+-- Transaction History Table
+CREATE TABLE transaction_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    transaction_id INT NOT NULL,
+    description TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (transaction_id) REFERENCES transactions(id) ON DELETE CASCADE
+);
 
-//logs table
-CREATE TABLE logs (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  event_type VARCHAR(50) NOT NULL,
-  description TEXT,
-  user_id INT,  -- Nullable if event is not related to a particular user
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- Support Tickets Table
+CREATE TABLE support_tickets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    status ENUM('open', 'closed') DEFAULT 'open',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 
+-- Analytics Table
+CREATE TABLE analytics (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    total_users INT DEFAULT 0,
+    total_transactions INT DEFAULT 0,
+    total_deposits DECIMAL(12,2) DEFAULT 0.00,
+    total_withdrawals DECIMAL(12,2) DEFAULT 0.00,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-Relationships Between Tables
-users → transactions:
-Each transaction record is associated with one user (via user_id).
-
-users → transfers:
-Transfers reference both a sender (sender_id) and a receiver (receiver_id), each linked to the users table.
-
-users → scheduled_payments:
-Each scheduled payment is set by a user (via user_id).
-
-users → notifications:
-Notifications are sent to users, so each notification has a foreign key linking it to a user.
-
-users → logs:
-Logs can record events associated with a user (if applicable).
-
-account_limits:
-This table does not directly reference users but defines the limits for each tier, which is then enforced in application logic when processing transactions.
+-- Backups Table
+CREATE TABLE backups (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    backup_file VARCHAR(255) NOT NULL,
+    status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
