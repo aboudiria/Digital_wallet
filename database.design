@@ -1,11 +1,112 @@
-CREATE TABLE `users` (
-    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `fullname` VARCHAR(255) NOT NULL,
-    `email` VARCHAR(255) NOT NULL UNIQUE,
-    `phone` VARCHAR(20) NOT NULL,
-    `password` VARCHAR(255) NOT NULL,
-    `id_document` VARCHAR(255) DEFAULT NULL,
-    `is_verified` TINYINT(1) DEFAULT 0,
-    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+//Table of users
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  fullname VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  phone VARCHAR(20) NOT NULL,
+  address VARCHAR(255),
+  password VARCHAR(255) NOT NULL,
+  id_document VARCHAR(255),
+  is_verified TINYINT(1) DEFAULT 0,
+  tier ENUM('basic','verified','premium') DEFAULT 'basic',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+//Table of transactions
+CREATE TABLE transactions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  transaction_type ENUM('deposit','withdrawal','transfer','scheduled') NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  balance_after DECIMAL(10,2),
+  status ENUM('pending','completed','failed') DEFAULT 'pending',
+  reference VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+//Transfers Table
+
+CREATE TABLE transfers (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  sender_id INT NOT NULL,
+  receiver_id INT NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  status ENUM('pending','completed','failed') DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (sender_id) REFERENCES users(id),
+  FOREIGN KEY (receiver_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+// Scheduled Payments Table
+CREATE TABLE scheduled_payments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  payee VARCHAR(255) NOT NULL,  -- Could be an external recipient email/phone or a foreign key if internal
+  amount DECIMAL(10,2) NOT NULL,
+  frequency ENUM('daily','weekly','monthly') NOT NULL,
+  next_payment_date DATE NOT NULL,
+  status ENUM('active','cancelled','completed') DEFAULT 'active',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+//  Account Limits Table
+CREATE TABLE account_limits (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  tier ENUM('basic','verified','premium') NOT NULL,
+  daily_limit DECIMAL(10,2) NOT NULL,
+  weekly_limit DECIMAL(10,2) NOT NULL,
+  monthly_limit DECIMAL(10,2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+//Notifications Table
+CREATE TABLE notifications (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  message VARCHAR(500) NOT NULL,
+  is_read TINYINT(1) DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+//logs table
+CREATE TABLE logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  event_type VARCHAR(50) NOT NULL,
+  description TEXT,
+  user_id INT,  -- Nullable if event is not related to a particular user
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+Relationships Between Tables
+users → transactions:
+Each transaction record is associated with one user (via user_id).
+
+users → transfers:
+Transfers reference both a sender (sender_id) and a receiver (receiver_id), each linked to the users table.
+
+users → scheduled_payments:
+Each scheduled payment is set by a user (via user_id).
+
+users → notifications:
+Notifications are sent to users, so each notification has a foreign key linking it to a user.
+
+users → logs:
+Logs can record events associated with a user (if applicable).
+
+account_limits:
+This table does not directly reference users but defines the limits for each tier, which is then enforced in application logic when processing transactions.
