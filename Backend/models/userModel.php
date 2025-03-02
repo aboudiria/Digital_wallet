@@ -1,52 +1,34 @@
 <?php
-require_once '../config/db_connect.php';
+include __DIR__ . '/../config/db_connect.php';
 
 class UserModel {
-    public function registerUser($name, $email, $phone, $password, $address, $id_document) {
-        global $conn;
+    private $conn;
 
-        // Check if email already exists
-        $email_check = $conn->prepare("SELECT id FROM users WHERE email = ?");
-        $email_check->bind_param("s", $email);
-        $email_check->execute();
-        $email_check->store_result();
-        if ($email_check->num_rows > 0) {
-            return "Email already exists.";
-        }
-        
-        // Check if phone number already exists
-        $phone_check = $conn->prepare("SELECT id FROM users WHERE phone = ?");
-        $phone_check->bind_param("s", $phone);
-        $phone_check->execute();
-        $phone_check->store_result();
-        if ($phone_check->num_rows > 0) {
-            return "Phone number already exists.";
-        }
+    public function __construct($conn) {
+        $this->conn = $conn;
+    }
 
-        // Hash the password
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    public function registerUser($fullname, $email, $phone, $password, $address, $documentPath) {
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        // Insert user data
-        $stmt = $conn->prepare("INSERT INTO users (name, email, phone, password, role, verification_status)
-         VALUES (?, ?, ?, ?, 'client', 'pending')");
-        $stmt->bind_param("ssss", $name, $email, $phone, $hashed_password);
+        // Insert User Data
+        $query = "INSERT INTO users (name, email, phone, password, address, verification_status) VALUES (?, ?, ?, ?, ?, 'pending')";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("sssss", $fullname, $email, $phone, $hashedPassword, $address);
+
         if ($stmt->execute()) {
-            $user_id = $stmt->insert_id;
+            $userId = $stmt->insert_id; // Get last inserted user ID
 
-            // Handle file upload for ID document
-            $document_path = 'uploads/' . $id_document['name'];
-            move_uploaded_file($id_document['tmp_name'], $document_path);
+            
+            $queryVerification = "INSERT INTO identity_verifications (user_id, document_path, status) VALUES (?, ?, 'pending')";
+            $stmtVerification = $this->conn->prepare($queryVerification);
+            $stmtVerification->bind_param("is", $userId, $documentPath);
 
-            // Insert the identity verification record
-            $verification_stmt = $conn->prepare("INSERT INTO identity_verifications (user_id, document_type, document_path) VALUES (?, ?, ?)");
-            $document_type = 'passport'; // You can modify this depending on the form input
-            $verification_stmt->bind_param("iss", $user_id, $document_type, $document_path);
-            $verification_stmt->execute();
-
-            return "User registered successfully.";
-        } else {
-            return "Error registering user: " . $conn->error;
+            if ($stmtVerification->execute()) {
+                return ['success' => true, 'message' => 'Registration successful. Please wait for verification.'];
+            }
         }
+        return ['success' => false, 'message' => 'Registration failed.'];
     }
 }
 ?>

@@ -12,7 +12,6 @@ try {
     if ($conn->connect_error) {
         throw new Exception("Connection failed: " . $conn->connect_error);
     }
-    die("connection success");
 } catch (Exception $e) {
     die("Database connection error: " . $e->getMessage());
 }
