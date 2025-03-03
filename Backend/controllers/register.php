@@ -1,63 +1,84 @@
 <?php
-header('Content-Type: application/json');
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+header('Content-Type: application/json'); 
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 
-include '../config/db_connect.php';
-include '../models/UserModel.php';
+require_once "../config/db_connect.php";
+require_once "../models/userModel.php";
 
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
+// Ensure the request method is POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
+    exit();
+}
+
+// Retrieve input data
+$fullname = $_POST['fullname'] ?? '';
+$email = $_POST['email'] ?? '';
+$phone = $_POST['phone'] ?? '';
+$password = $_POST['password'] ?? '';
+$confirmPassword = $_POST['confirmPassword'] ?? '';
+$address = $_POST['address'] ?? '';
+
+// Validate required fields
+if (!$fullname || !$email || !$phone || !$password || !$confirmPassword || !$address) {
+    echo json_encode(['status' => 'error', 'message' => 'All fields are required.']);
+    exit();
+}
+
+// Validate email format
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid email format.']);
+    exit();
+}
+
+// Validate passwords match
+if ($password !== $confirmPassword) {
+    echo json_encode(['status' => 'error', 'message' => 'Passwords do not match.']);
+    exit();
+}
+
+// Process file upload
+$documentPath = null;
+if (!empty($_FILES['id_document']['name'])) {
+    $uploadDir = __DIR__ . '/../uploads/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+
+    $fileTmpPath = $_FILES['id_document']['tmp_name'];
+    $originalName = basename($_FILES['id_document']['name']);
+    $fileExtension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf'];
+
+    if (!in_array($fileExtension, $allowedExtensions)) {
+        echo json_encode(['status' => 'error', 'message' => 'Invalid file type. Only JPG, PNG, and PDF allowed.']);
+        exit();
+    }
+
+    $newFileName = uniqid('id_', true) . '.' . $fileExtension;
+    $destPath = $uploadDir . $newFileName;
+
+    if (!move_uploaded_file($fileTmpPath, $destPath)) {
+        echo json_encode(['status' => 'error', 'message' => 'Error uploading file.']);
+        exit();
+    }
+    $documentPath = 'uploads/' . $newFileName;
+}
+
+// Register user
 $userModel = new UserModel($conn);
-if($_SERVER['CONTENT_TYPE']==='application/json'){
-    $data=json_decode(file_get_contents('php://input'),true);
-} else{
-    $data= $_POST;
-}
+$result = $userModel->registerUser($fullname, $email, $phone, $password, $address, $documentPath);
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Validate Form Data
-    $fullname = $_POST['fullname'] ??'';
-    $email = $_POST['email'] ?? '';
-    $phone = $_POST['phone'] ?? '';
-    $address = $_POST['address'] ?? '';
-    $password = $_POST['password'] ?? '';
-    $confirm_password = $_POST['confirm_password'] ?? '';
-
-    if (!$fullname || !$email || !$phone || !$address || !$password || !$confirm_password || !isset($_FILES['id_document'])) {
-        echo json_encode(['success' => false, 'message' => 'All fields are required.']);
-        exit();
-    }
-
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo json_encode(['success' => false, 'message' => 'Invalid email format.']);
-        exit();
-    }
-
-    if ($password !== $confirm_password) {
-        echo json_encode(['success' => false, 'message' => 'Passwords do not match.']);
-        exit();
-    }
-
-    if (!preg_match('/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password)) {
-        echo json_encode(['success' => false, 'message' => 'Weak password. Must include letters, numbers, and special characters.']);
-        exit();
-    }
-
-    $documentPath = '../uploads/' . basename($_FILES['id_document']['name']);
-
-    if ($_FILES['id_document']['error'] !== UPLOAD_ERR_OK) {
-        echo json_encode(['success' => false, 'message' => 'File upload error.']);
-        exit();
-    }
-    
-    if (!move_uploaded_file($_FILES['id_document']['tmp_name'], $documentPath)) {
-        echo json_encode(['success' => false, 'message' => 'File upload failed.']);
-        exit();
-    }
-    
-    
-    $response = $userModel->registerUser($fullname, $email, $phone, $password, $address, $documentPath);
-
-    echo json_encode($response);
-}
-
-$conn->close();
+// Return response as JSON
+echo json_encode($result);
 ?>

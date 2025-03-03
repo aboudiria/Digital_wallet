@@ -11,24 +11,23 @@ class UserModel {
     public function registerUser($fullname, $email, $phone, $password, $address, $documentPath) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        // Insert User Data
-        $query = "INSERT INTO users (name, email, phone, password, address, verification_status) VALUES (?, ?, ?, ?, ?, 'pending')";
+        $query = "INSERT INTO users (name, email, phone, password, address) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("sssss", $fullname, $email, $phone, $hashedPassword, $address);
 
         if ($stmt->execute()) {
-            $userId = $stmt->insert_id; // Get last inserted user ID
+            $userId = $stmt->insert_id;
 
-            
+            // Insert into identity_verifications table
             $queryVerification = "INSERT INTO identity_verifications (user_id, document_path, status) VALUES (?, ?, 'pending')";
             $stmtVerification = $this->conn->prepare($queryVerification);
             $stmtVerification->bind_param("is", $userId, $documentPath);
 
             if ($stmtVerification->execute()) {
-                return ['success' => true, 'message' => 'Registration successful. Please wait for verification.'];
+                return ['status' => 'success', 'message' => 'Registration successful. Please wait for verification.'];
             }
         }
-        return ['success' => false, 'message' => 'Registration failed.'];
+        return ['status' => 'error', 'message' => 'Registration failed.'];
     }
 }
 ?>
