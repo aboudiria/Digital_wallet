@@ -50,10 +50,31 @@ class UserModel {
             return ['status' => 'error', 'message' => 'No user found with that email.'];
         }
     }
+
+    // Update user profile
+    public function updateUserProfile($userId, $fullname, $address, $phone) {
+        $query = "UPDATE users SET name = ?, address = ?, phone = ? WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("sssi", $fullname, $address, $phone, $userId);
+
+        if ($stmt->execute()) {
+            return ['status' => 'success', 'message' => 'Profile updated successfully.'];
+        }
+        return ['status' => 'error', 'message' => 'Failed to update profile.'];
+    }
+
+    // Get user profile
+    public function getUserProfile($userId) {
+        $query = "SELECT name, email, phone, address FROM users WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows === 1) {
+            return ['status' => 'success', 'user' => $result->fetch_assoc()];
+        }
+        return ['status' => 'error', 'message' => 'User not found.'];
+    }
 }
-
-
-
-
-
 ?>

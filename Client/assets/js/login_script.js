@@ -20,12 +20,13 @@ document.addEventListener("DOMContentLoaded", function () {
           const data = JSON.parse(text);
           if (data.success) {
             alert("Login Successful");
-            if (data.role === 'admin') {
-              window.location.href = "http://localhost/admin/dashboard.html";
+            if(data.role === "admin"){
+                        window.location.href='localhost/admin/dashboard'
             } else {
-              window.location.href = "wallet.html";
+                            window.location.href = "wallet.html";
+
             }
-          } else {
+        } else {
             alert(data.message);
           }
         } catch (jsonError) {

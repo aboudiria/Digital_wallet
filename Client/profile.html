@@ -19,30 +19,32 @@
     </nav>
   </header>
 
- 
   <main class="profile-container">
     <div class="profile-card">
       <h2>Profile Management</h2>
       <form id="profileForm">
         <div class="form-group">
           <label for="fullname">Full Name</label>
-          <input type="text" id="fullname" name="fullname" value="John Doe" required />
+          <input type="text" id="fullname" name="fullname" required />
         </div>
         <div class="form-group">
           <label for="address">Address</label>
-          <input type="text" id="address" name="address" value="123 Main Street" required />
+          <input type="text" id="address" name="address" required />
         </div>
         <div class="form-group">
           <label for="phone">Contact Number</label>
-          <input type="text" id="phone" name="phone" value="1234567890" required />
+          <input type="text" id="phone" name="phone" required />
         </div>
         <div class="form-group">
           <label for="email">Email Address</label>
-          <input type="email" id="email" name="email" value="john@example.com" required />
+          <input type="email" id="email" name="email" required readonly />
         </div>
         <button type="submit" class="btn">Update Profile</button>
       </form>
+      <p id="updateMessage"></p>
     </div>
   </main>
+
+  <script src="./assets/js/profile_script.js"></script>
 </body>
 </html>
