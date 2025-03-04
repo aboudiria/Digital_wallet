@@ -1,6 +1,7 @@
 <?php
 include __DIR__ . '/../config/db_connect.php';
 
+
 class UserModel {
     private $conn;
 
@@ -36,13 +37,22 @@ class UserModel {
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
-
+    
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
-
+    
             if (password_verify($password, $user['password'])) {
+                require_once __DIR__ . '/../utils/authJWT.php';
+                $token = authJWT($user); 
+                
                 $role = isset($user['role']) ? $user['role'] : 'client';
-                return ['status' => 'success', 'role' => $role, 'message' => 'Login successful.'];
+    
+                return [
+                    'status' => 'success',
+                    'role' => $role,
+                    'token' => $token, 
+                    'message' => 'Login successful.'
+                ];
             } else {
                 return ['status' => 'error', 'message' => 'Incorrect password.'];
             }
@@ -50,6 +60,7 @@ class UserModel {
             return ['status' => 'error', 'message' => 'No user found with that email.'];
         }
     }
+    
 
     // Update user profile
     public function updateUserProfile($userId, $fullname, $address, $phone) {

@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
             try {
                 const result = JSON.parse(text);
                 console.log("Server Response:", result);
+                
 
                 if (result.status === "success") {
                     alert(result.message);
