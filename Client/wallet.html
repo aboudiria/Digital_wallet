@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
-  <!-- Navigation Bar -->
   <header>
     <nav class="navbar">
       <div class="logo">DigitalWallet</div>
@@ -27,15 +26,15 @@
       <div class="wallet-stats">
         <div class="stat-card">
           <h3>Balance</h3>
-          <p>$1,200.00</p>
+          <p id="balance">$0.00</p>
         </div>
         <div class="stat-card">
           <h3>Total Deposits</h3>
-          <p>$3,500.00</p>
+          <p id="total_deposits">$0.00</p>
         </div>
         <div class="stat-card">
           <h3>Total Withdrawals</h3>
-          <p>$2,300.00</p>
+          <p id="total_withdrawals">$0.00</p>
         </div>
       </div>
     </section>
@@ -49,5 +48,7 @@
       </div>
     </section>
   </main>
+  
+  <script src="./assets/js/wallet.js"></script>
 </body>
 </html>

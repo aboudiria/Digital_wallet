@@ -9,16 +9,14 @@ document.addEventListener("DOMContentLoaded", function () {
     registerForm.addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        // Create FormData object to handle file upload correctly
         const formData = new FormData(registerForm);
 
         try {
             const response = await fetch("http://localhost/backend/controllers/register.php", {
                 method: "POST",
-                body: formData // Automatically handles multipart/form-data
+                body: formData 
             });
 
-            // Ensure the response is valid JSON
             const text = await response.text();
             try {
                 const result = JSON.parse(text);

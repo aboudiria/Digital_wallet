@@ -1,7 +1,5 @@
 <?php
-// backend/utils/authJWT.php
 
-// Autoload the JWT library if using Composer
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Firebase\JWT\JWT;

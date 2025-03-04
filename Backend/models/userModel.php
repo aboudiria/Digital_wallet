@@ -19,7 +19,6 @@ class UserModel {
         if ($stmt->execute()) {
             $userId = $stmt->insert_id;
 
-            // Insert into identity_verifications table
             $queryVerification = "INSERT INTO identity_verifications (user_id, document_path, status) VALUES (?, ?, 'pending')";
             $stmtVerification = $this->conn->prepare($queryVerification);
             $stmtVerification->bind_param("is", $userId, $documentPath);
